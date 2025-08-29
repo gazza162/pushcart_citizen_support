@@ -26,9 +26,7 @@
     @media (max-width: 700px){ .gallery{ grid-template-columns:repeat(2,1fr);} }
     .gallery img { width:100%; height:160px; object-fit:cover; border-radius:10px; }
 
-    /* Resource links */
-    .pdf { padding:12px; background:#e8f0fe; border-left:4px solid var(--brand); border-radius:6px; }
-    .pdf a{ text-decoration:none; font-weight:600; }
+    
 
     /* Form */
     form { display:grid; gap:12px; }
@@ -52,7 +50,20 @@
     ];
     // === OPTIONAL: change default subject & message ===
     const DEFAULT_SUBJECT = "Stop mechanisation, Support SWaCH";
-    const DEFAULT_BODY = `Dear Officials,
+    const DEFAULT_BODY = ` आदरणीय नेते व अधिकारी,
+
+पुण्यातील घरपोच कचरा संकलन बंद करून वाहनांद्वारे गेटवर कचरा घेण्याची नवी पद्धत सुरू करण्याच्या निर्णयाबाबत मला खूप चिंता वाटते.
+
+गेल्या १५ वर्षांपासून पुणेकरांना कचरावेचक घरपोच सेवा स्वस्त दरात मिळत आहे. आता ही सेवा बंद करून गेटवर संकलन सुरू केल्यास सेवा कमी होईल, गैरसोय वाढेल, रस्त्यांवर वाहतूक व प्रदूषण वाढेल, आणि मिश्र कचऱ्याचे प्रमाणही वाढेल. आपल्या प्रक्रिया केंद्रांना हा मिसळलेला कचरा हाताळणे कठीण होईल.
+
+मी आपणाला विनंती करतो की पुण्यातील घरपोच कचरा संकलन सुरूच ठेवावे. ही व्यवस्था कार्यक्षम, नागरिकांसाठी सोयीस्कर आणि पर्यावरणपूरक आहे. कृपया कचरावेचकांचा या व्यवस्थेत समावेश कायम राहील याची खात्री करावी आणि कोणतेही बदल जबाबदार आणि नागरिकांच्या फायद्याचे असावेत.
+
+आपला,
+चिंताग्रस्त नागरिक
+    
+------------------------------    
+    
+    Dear Officials,
 
 I am deeply concerned about the proposed shift from Pune’s doorstep waste collection system to a vehicle-based gate collection model. 
 
@@ -94,22 +105,10 @@ A concerned citizen`;
 <body>
   <div class="wrap">
     <header>
-      <h1>Stop Mechanisation, Support SWaCH</h1>
+      <h1>Stop Mechanization, Support SWaCH</h1>
       <nav><a href="#support">Voice your Support</a></nav>
     </header>
-
-    <div class="grid two">
-      <section>
-        <p>
-          Stop mechanisation, Support SWaCH
-        </p>
-
-        <!-- Resource links (optional) -->
-        <div class="grid" style="margin: 16px 0;">
-          <div class="pdf"><a href="Chikarmane_Narayan_case-kkpkp.pdf" target="_blank">Organising the Unorganised: The story of KKPKP</a></div>
-          <div class="pdf"><a href="Green_Collar_Women.pdf" target="_blank">Green Collar Women</a></div>
-        </div>
-      </section>
+       
 
       <!-- Video -->
       <section class="card">
@@ -125,15 +124,28 @@ A concerned citizen`;
       </section>
     </div>
 
+  <section class="card" style="margin-top:16px;">
+<div class="callout">
+<p><strong>English:</strong><br>
+Pune’s doorstep waste collection is being replaced with Indore’s costly, inefficient, and polluting mechanized system. Less service, more traffic, higher bills—demand accountability before it’s too late.</p>
+</div>
+</section>
+  
     <!-- Gallery -->
     <section style="margin-top:24px;">
       
       <div class="gallery">
-        <img src="SWaCH_All_Members.jpg" alt="Members meeting">
-        <img src="swach_push_cart.png" alt="SWaCH push cart">
-        <img src="swach_logo.jpg" alt="SWaCH logo">
+        <img src="news.jpg">
+      
       </div>
     </section>
+
+    <section class="card" style="margin-top:16px;">
+<div class="callout">
+<p><strong>Marathi:</strong><br>
+“पुण्यातील घरपोच कचरा संकलन व्यवस्था इंडोरच्या महागड्या, अप्रभावी आणि प्रदूषणकारी यांत्रिक पद्धतीने बदलली जात आहे. कमी सेवा, अधिक वाहतूक, जास्त बिलं — उशीर होण्याआधी जबाबदारीची मागणी करा.”</p>
+</div>
+</section>
 
     <!-- Support widget -->
     <section id="support" class="card" style="margin-top:24px;">
