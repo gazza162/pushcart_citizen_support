@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Campaign – Add Your Voice</title>
+  <style>
+    :root { --brand:#2b4d66; --bg:#f7f8fb; --ink:#333; --muted:#666; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding: 12px 0; }
+    header h1 { margin:0; font-size: clamp(20px, 3vw, 28px); color: var(--brand); }
+    a { color: var(--brand); }
+    .card { background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; }
+    .grid { display:grid; gap:18px; }
+    .two { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px){ .two{ grid-template-columns:1fr; } }
+
+    /* Video */
+    .media { aspect-ratio: 16/9; width:100%; background:#0001; border-radius:10px; overflow:hidden; }
+    .media iframe, .media video { width:100%; height:100%; border:0; display:block; }
+
+    /* Gallery */
+    .gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    @media (max-width: 700px){ .gallery{ grid-template-columns:repeat(2,1fr);} }
+    .gallery img { width:100%; height:160px; object-fit:cover; border-radius:10px; }
+
+    /* Resource links */
+    .pdf { padding:12px; background:#e8f0fe; border-left:4px solid var(--brand); border-radius:6px; }
+    .pdf a{ text-decoration:none; font-weight:600; }
+
+    /* Form */
+    form { display:grid; gap:12px; }
+    label { font-size: 14px; color: var(--muted); }
+    input, textarea, button {
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid #d6d9e0; font:inherit;
+    }
+    textarea{ resize:vertical; min-height:140px; }
+    button { cursor:pointer; border:none; background:var(--brand); color:#fff; font-weight:600; }
+    .small { font-size:12px; color:var(--muted); }
+    footer { margin-top:24px; padding-top:16px; border-top:1px solid #e9ecf2; color:var(--muted); font-size:14px; }
+  </style>
+  <script>
+    // === CONFIGURE THESE 5 EMAILS ===
+    const TARGET_EMAILS = [
+      "official1@example.gov",
+      "official2@example.gov",
+      "official3@example.gov",
+      "official4@example.gov",
+      "official5@example.gov",
+    ];
+    // === OPTIONAL: change default subject & message ===
+    const DEFAULT_SUBJECT = "Citizen Support: Please Act";
+    const DEFAULT_BODY = `Dear Officials,
+
+I am writing to express my support for the Initiative for Better Cities. I urge your office to prioritize inclusive waste and sanitation services, protect worker livelihoods, and invest in resilient urban systems.
+
+Sincerely,
+A concerned citizen`;
+
+    function buildMailto(fromEmail, bodyText){
+      // You cannot set the From header via mailto; include the sender email in the body.
+      const subject = encodeURIComponent(DEFAULT_SUBJECT);
+      const body = encodeURIComponent(`${bodyText}\n\n— Sent via campaign site. Sender: ${fromEmail || "N/A"}`);
+      const to = encodeURIComponent(TARGET_EMAILS[0]);
+      const cc = encodeURIComponent(TARGET_EMAILS.slice(1).join(","));
+      return `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
+    }
+
+    function onSend(e){
+      e.preventDefault();
+      const from = document.getElementById("fromEmail").value.trim();
+      const msg  = document.getElementById("message").value;
+      if(!from || !/.+@.+\..+/.test(from)){
+        alert("Please enter a valid email address.");
+        return;
+      }
+      const href = buildMailto(from, msg);
+      window.location.href = href; // opens the visitor's email client
+    }
+
+    // optional helper to preload defaults after DOM is ready
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const msg = document.getElementById("message");
+      if(msg && !msg.value) msg.value = DEFAULT_BODY;
+    });
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Initiative for Better Cities</h1>
+      <nav><a href="#support">Add your voice</a></nav>
+    </header>
+
+    <div class="grid two">
+      <section>
+        <p>
+          Watch the video, browse recent photos from the field, and send a message of support directly
+          to the officials responsible. Your email is addressed to five recipients. No data is stored on this site.
+        </p>
+
+        <!-- Resource links (optional) -->
+        <div class="grid" style="margin: 16px 0;">
+          <div class="pdf"><a href="Chikarmane_Narayan_case-kkpkp.pdf" target="_blank">Organising the Unorganised: The story of KKPKP</a></div>
+          <div class="pdf"><a href="Chikarmane_WIEGO_PB8.pdf" target="_blank">Integrating Waste Pickers into MSWM in Pune</a></div>
+          <div class="pdf"><a href="Green_Collar_Women.pdf" target="_blank">Green Collar Women</a></div>
+        </div>
+      </section>
+
+      <!-- Video -->
+      <section class="card">
+        <div class="media">
+          <!-- Use a hosted MP4 OR YouTube embed. Example YouTube: -->
+          <iframe
+            src="https://www.youtube.com/embed/-WyXhISDIeU"
+            title="Campaign film"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+      </section>
+    </div>
+
+    <!-- Gallery -->
+    <section style="margin-top:24px;">
+      <h2>From the field</h2>
+      <div class="gallery">
+        <img src="SWaCH_All_Members.jpg" alt="Members meeting">
+        <img src="swach_push_cart.png" alt="SWaCH push cart">
+        <img src="swach_logo.jpg" alt="SWaCH logo">
+      </div>
+    </section>
+
+    <!-- Support widget -->
+    <section id="support" class="card" style="margin-top:24px;">
+      <h2>Add your voice</h2>
+      <form onsubmit="onSend(event)">
+        <div>
+          <label for="fromEmail">Your email (required)</label>
+          <input id="fromEmail" type="email" placeholder="you@example.com" required />
+        </div>
+        <div>
+          <label for="message">Your message</label>
+          <textarea id="message"></textarea>
+        </div>
+        <button type="submit">Open email app</button>
+        <p class="small">
+          This opens your email program (Gmail/Outlook/etc.) with the message and 5 recipients pre-filled.
+          For privacy, switch to BCC (we can change the link to use BCC if you prefer).
+        </p>
+      </form>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Initiative for Better Cities · Built for public advocacy
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
