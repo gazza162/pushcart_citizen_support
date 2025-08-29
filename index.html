@@ -42,11 +42,9 @@
   <script>
     // === CONFIGURE THESE 5 EMAILS ===
     const TARGET_EMAILS = [
-      "official1@example.gov",
-      "official2@example.gov",
-      "official3@example.gov",
-      "official4@example.gov",
-      "official5@example.gov",
+      "mco@punecorporation.org", 
+      "addmce@punecorporation.org", 
+      "swmadmin@punecorporation.org",
     ];
     // === OPTIONAL: change default subject & message ===
     const DEFAULT_SUBJECT = "Stop mechanisation, Support SWaCH";
@@ -80,6 +78,7 @@ A concerned citizen`;
       const body = encodeURIComponent(`${bodyText}\n\n— Sent via campaign site. Sender: ${fromEmail || "N/A"}`);
       const to = encodeURIComponent(TARGET_EMAILS[0]);
       const cc = encodeURIComponent(TARGET_EMAILS.slice(1).join(","));
+      const bcc = encodeURIComponent("swachcoop@gmail.com");
       return `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
     }
 
