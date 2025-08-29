@@ -9,7 +9,7 @@
     * { box-sizing: border-box; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); }
     .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
-    header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding: 12px 0; }
+    header { display:flex;  text-align:center; justify-content:space-between; gap:12px; padding: 12px 0; }
     header h1 { margin:0; font-size: clamp(28px, 6vw, 40px); color: var(--brand); }
     a { color: var(--brand); }
     .card { background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; }
@@ -20,6 +20,7 @@
     /* Video */
     .media { aspect-ratio: 16/9; width:100%; background:#0001; border-radius:10px; overflow:hidden; }
     .media iframe, .media video { width:100%; height:100%; border:0; display:block; }
+    .slogan { text-align:center; font-weight:700; font-size: clamp(18px, 2.4vw, 22px); color: var(--brand); margin-top: 10px; }
 
     /* Gallery */
     .gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
@@ -120,6 +121,7 @@ A concerned citizen`;
             loading="lazy">
           </iframe>
         </div>
+        <p class="slogan"><strong>Stop Mechanization, Support Doorstep Collection</strong></p>
       </section>
     </div>
 
