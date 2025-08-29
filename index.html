@@ -9,7 +9,7 @@
     * { box-sizing: border-box; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); }
     .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
-    header { display:flex;  text-align:center; justify-content:space-between; gap:12px; padding: 12px 0; }
+    header { display:flex; text-align:center; justify-content:space-between; gap:12px; padding: 12px 0; }
     header h1 { margin:0; font-size: clamp(28px, 6vw, 40px); color: var(--brand); }
     a { color: var(--brand); } 
     .card { background:#fff; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; }
@@ -27,8 +27,6 @@
     @media (max-width: 700px){ .gallery{ grid-template-columns:repeat(2,1fr);} }
     .gallery img { width:100%; height:160px; object-fit:cover; border-radius:10px; }
 
-    
-
     /* Form */
     form { display:grid; gap:12px; }
     label { font-size: 14px; color: var(--muted); }
@@ -36,18 +34,21 @@
       width:100%; padding:10px 12px; border-radius:8px; border:1px solid #d6d9e0; font:inherit;
     }
     textarea{ resize:vertical; min-height:140px; }
+    .btnrow { display:flex; gap:8px; flex-wrap:wrap; }
     button { cursor:pointer; border:none; background:var(--brand); color:#fff; font-weight:600; }
     .small { font-size:12px; color:var(--muted); }
-    footer { margin-top:24px; padding-top:16px; border-top:1px solid #e9ecf2; color:var(--muted); font-size:14px; }
+    footer { margin-top:24px; padding-top:16px; border-top:1px solid #e9ecf2; color:var(--muted); font-size:14px; text-align:center; }
   </style>
   <script>
-    // === CONFIGURE THESE 5 EMAILS ===
+    // === CONFIGURE RECIPIENTS ===
     const TARGET_EMAILS = [
       "mco@punecorporation.org", 
       "addmce@punecorporation.org", 
       "swmadmin@punecorporation.org",
     ];
-    // === OPTIONAL: change default subject & message ===
+    const BCC_EMAILS = ["swachcoop@gmail.com"];
+
+    // === SUBJECT & DEFAULT BODY ===
     const DEFAULT_SUBJECT = "Stop mechanisation, Support SWaCH";
     const DEFAULT_BODY = `आदरणीय नेते व अधिकारी,
 
@@ -74,32 +75,56 @@ I urge you to protect Pune’s doorstep collection system, which is efficient, c
 Sincerely,  
 A concerned citizen`;
 
+    // --- Email helpers ---
+    function sepForThisBrowser(){ return /Windows/i.test(navigator.userAgent) ? ";" : ","; }
+    function encodeList(list, sep){ return encodeURIComponent(list.join(sep)); }
+
+    // Default email app (mailto)
     function buildMailto(fromEmail, bodyText){
-      // You cannot set the From header via mailto; include the sender email in the body.
       const subject = encodeURIComponent(DEFAULT_SUBJECT);
-      const body = encodeURIComponent(`${bodyText}\n\n— Sent via campaign site. Sender: ${fromEmail || "N/A"}`);
-      const to = encodeURIComponent(TARGET_EMAILS[0]);
-      const cc = encodeURIComponent(TARGET_EMAILS.slice(1).join(","));
-      const bcc = encodeURIComponent("swachcoop@gmail.com");
-      return `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
+      const body = encodeURIComponent(`${(bodyText || DEFAULT_BODY).trim()}\n\n— Sent via campaign site. Sender: ${fromEmail || "N/A"}`);
+      const sep  = sepForThisBrowser();
+      const to   = encodeURIComponent(TARGET_EMAILS[0] || "");
+      const cc   = encodeList(TARGET_EMAILS.slice(1), sep);
+      const bcc  = encodeList(BCC_EMAILS, sep);
+      const replyTo = fromEmail ? `&reply-to=${encodeURIComponent(fromEmail)}` : "";
+      const ccPart  = cc  ? `&cc=${cc}`   : "";
+      const bccPart = bcc ? `&bcc=${bcc}` : "";
+      return `mailto:${to}?subject=${subject}&body=${body}${ccPart}${bccPart}${replyTo}`;
     }
 
-    function onSend(e){
+    // Gmail web compose
+    function buildGmail(fromEmail, bodyText){
+      const to  = encodeURIComponent(TARGET_EMAILS[0] || "");
+      const cc  = encodeURIComponent(TARGET_EMAILS.slice(1).join(","));
+      const bcc = encodeURIComponent(BCC_EMAILS.join(","));
+      const su  = encodeURIComponent(DEFAULT_SUBJECT);
+      const body= encodeURIComponent((bodyText || DEFAULT_BODY).trim() + "\n\n— Sent via campaign site. Sender: " + (fromEmail || "N/A"));
+      return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&cc=${cc}&bcc=${bcc}&su=${su}&body=${body}`;
+    }
+
+    function onSendDefault(e){
       e.preventDefault();
       const from = document.getElementById("fromEmail").value.trim();
-      const msg  = document.getElementById("message").value;
-      if(!from || !/.+@.+\..+/.test(from)){
-        alert("Please enter a valid email address.");
-        return;
-      }
-      const href = buildMailto(from, msg);
-      window.location.href = href; // opens the visitor's email client
+      const msg  = (document.getElementById("message").value || DEFAULT_BODY).trim();
+      if(!from || !/.+@.+\..+/.test(from)){ alert("Please enter a valid email address."); return; }
+      window.location.href = buildMailto(from, msg);
     }
 
-    // optional helper to preload defaults after DOM is ready
+    function onSendGmail(e){
+      e.preventDefault();
+      const from = document.getElementById("fromEmail").value.trim();
+      const msg  = (document.getElementById("message").value || DEFAULT_BODY).trim();
+      if(!from || !/.+@.+\..+/.test(from)){ alert("Please enter a valid email address."); return; }
+      window.open(buildGmail(from, msg), "_blank");
+    }
+
+    // Seed defaults & footer year
     document.addEventListener("DOMContentLoaded", ()=>{
       const msg = document.getElementById("message");
       if(msg && !msg.value) msg.value = DEFAULT_BODY;
+      const y = document.getElementById("year");
+      if(y) y.textContent = new Date().getFullYear();
     });
   </script>
 </head>
@@ -109,47 +134,46 @@ A concerned citizen`;
       <h1>#हवे फक्त SWaCH</h1>
       <nav><a href="#support">Voice your Support</a></nav>
     </header>
-       
 
-      <!-- Video -->
-      <section class="card">
-        <div class="media">
-          <!-- Use a hosted MP4 OR YouTube embed. Example YouTube: -->
-          <iframe
-            src="https://www.youtube.com/embed/-WyXhISDIeU"
-            title="Campaign film"
-            allowfullscreen
-            loading="lazy">
-          </iframe>
-        </div>
-        <p class="slogan"><strong>Stop Mechanization, Support Doorstep Collection</strong></p>
-      </section>
-    </div>
-
-  <section class="card" style="margin-top:16px;">
-<div class="callout" style="text-align:center; max-width:720px; margin:0 auto;">
-<p>
-Pune’s doorstep waste collection is being replaced with a costly, inefficient, and polluting mechanized system. Less service, more traffic, higher taxes—raise your voice before it’s too late.</p>
-</div>
-</section>
-  
-  <section style="margin-top:24px;">
-  <div class="gallery" style="grid-template-columns:1fr; place-items:center;">
-    <img src="news.jpg" alt="News" style="width:auto; max-width:100%; height:auto;">
-  </div>
-</section>
+    <!-- Video -->
+    <section class="card">
+      <div class="media">
+        <iframe
+          src="https://www.youtube.com/embed/-WyXhISDIeU"
+          title="Campaign film"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+      <p class="slogan"><strong>Stop Mechanization, Support Doorstep Collection</strong></p>
+    </section>
 
     <section class="card" style="margin-top:16px;">
-<div class="callout" style="text-align:center; max-width:720px; margin:0 auto;">
-<p>
-पुण्यातील घरपोच कचरा संकलन व्यवस्था एका महागड्या, बेभरवशी आणि प्रदूषण वाढवणाऱ्या यांत्रिक पद्धतीने बदलली जात आहे. कमी सेवा, जास्त ट्रॅफिक, आणि त्याहून जास्त टॅक्स — उशीर होण्याआधी तुमचे म्हणणे स्पष्टपणे मांडा.</p>
-</div>
-</section>
+      <div class="callout" style="text-align:center; max-width:720px; margin:0 auto;">
+        <p>
+          Pune’s doorstep waste collection is being replaced with a costly, inefficient, and polluting mechanized system. Less service, more traffic, higher taxes—raise your voice before it’s too late.
+        </p>
+      </div>
+    </section>
+  
+    <section style="margin-top:24px;">
+      <div class="gallery" style="grid-template-columns:1fr; place-items:center;">
+        <img src="news.jpg" alt="News" style="width:auto; max-width:100%; height:auto;">
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <div class="callout" style="text-align:center; max-width:720px; margin:0 auto;">
+        <p>
+          पुण्यातील घरपोच कचरा संकलन व्यवस्था एका महागड्या, बेभरवशी आणि प्रदूषण वाढवणाऱ्या यांत्रिक पद्धतीने बदलली जात आहे. कमी सेवा, जास्त ट्रॅफिक, आणि त्याहून जास्त टॅक्स — उशीर होण्याआधी तुमचे म्हणणे स्पष्टपणे मांडा.
+        </p>
+      </div>
+    </section>
 
     <!-- Support widget -->
     <section id="support" class="card" style="margin-top:24px;">
       <h2>Raise your voice</h2>
-      <form onsubmit="onSend(event)">
+      <form>
         <div>
           <label for="fromEmail">Your email (required)</label>
           <input id="fromEmail" type="email" placeholder="you@example.com" required />
@@ -158,17 +182,23 @@ Pune’s doorstep waste collection is being replaced with a costly, inefficient,
           <label for="message">Your message</label>
           <textarea id="message"></textarea>
         </div>
-        <button type="submit">Open email app</button>
-        
+        <div class="btnrow">
+          <button type="submit" onclick="onSendDefault(event)">Open email app</button>
+          <button type="button" onclick="onSendGmail(event)">Open in Gmail (web)</button>
+        </div>
+        <p class="small">
+          Use your default email app or open Gmail in the browser. Both pre-fill To/CC/BCC, subject, and message.
+        </p>
       </form>
     </section>
 
-<section class="card" style="margin-top:24px; text-align:center;">
-<img src="swach_logo.jpg" style="width:auto; max-width:100%; height:auto;">
-</section>
+    <section class="card" style="margin-top:24px; text-align:center;">
+      <img src="swach_logo.jpg" alt="SWaCH logo" style="width:auto; max-width:100%; height:auto;">
+    </section>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+    <footer>
+      © <span id="year"></span> SWaCH needs you
+    </footer>
+  </div>
 </body>
 </html>
